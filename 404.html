@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"Website","@id":"http://yoursite.com","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"]},"name":"Fitz的博客","description":null,"url":"http://yoursite.com"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"Website","@id":"http://yoursite.com","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg"},"name":"Fitz的博客","description":null,"url":"http://yoursite.com"}</script>
     <meta name="description" content="title: Page not foundmeta: falseactions: falsecomments: false">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Fitz的博客">
@@ -27,6 +27,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://yoursite.comassets/images/cover.jpg"/>
     
     
     
@@ -45,6 +47,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="1">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -57,6 +63,8 @@
                 href="#about">
         
         
+            <img class="header-picture" src="assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -64,8 +72,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="1">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="assets/images/cover.jpg" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Fitz</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>SDU Master</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -278,25 +301,37 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Fitz</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>SDU Master</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Student</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                QingDao, CHN
+            </div>
         
     </div>
 </div>

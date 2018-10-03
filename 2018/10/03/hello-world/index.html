@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"]},"articleBody":"Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.\n\nQuick StartCreate a new post1$ hexo new \"My New Post\"\nMore info: Writing\nRun server1$ hexo server\nMore info: Server\nGenerate static files1$ hexo generate\nMore info: Generating\nDeploy to remote sites1$ hexo deploy\nMore info: Deployment\n","dateCreated":"2018-10-03T13:21:09+08:00","dateModified":"2018-10-03T15:50:55+08:00","datePublished":"2018-10-03T13:21:09+08:00","description":"Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.","headline":"Hello World","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/10/03/hello-world/"},"publisher":{"@type":"Organization","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"]},"url":"http://yoursite.com/2018/10/03/hello-world/"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg"},"articleBody":"Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.\n\nQuick StartCreate a new post1$ hexo new \"My New Post\"\nMore info: Writing\nRun server1$ hexo server\nMore info: Server\nGenerate static files1$ hexo generate\nMore info: Generating\nDeploy to remote sites1$ hexo deploy\nMore info: Deployment\n","dateCreated":"2018-10-03T13:21:09+08:00","dateModified":"2018-10-03T15:57:04+08:00","datePublished":"2018-10-03T13:21:09+08:00","description":"Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.","headline":"Hello World","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/10/03/hello-world/"},"publisher":{"@type":"Organization","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg","logo":{"@type":"ImageObject","url":"cover.jpg"}},"url":"http://yoursite.com/2018/10/03/hello-world/"}</script>
     <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Hello World">
@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="Fitz的博客">
 <meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-10-03T07:50:55.338Z">
+<meta property="og:updated_time" content="2018-10-03T07:57:04.986Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hello World">
 <meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
@@ -27,6 +27,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://yoursite.com../../../../assets/images/cover.jpg"/>
     
     
     
@@ -45,6 +47,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -57,6 +63,8 @@
                 href="#about">
         
         
+            <img class="header-picture" src="../../../../assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -64,8 +72,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="../../../../#about">
+                    <img class="sidebar-profile-picture" src="../../../../assets/images/cover.jpg" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Fitz</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>SDU Master</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -339,25 +362,37 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="../../../../assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Fitz</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>SDU Master</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Student</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                QingDao, CHN
+            </div>
         
     </div>
 </div>
