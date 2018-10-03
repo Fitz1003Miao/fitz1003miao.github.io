@@ -6,23 +6,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Fitz的博客">
-    <title>Hello World - Fitz的博客</title>
+    <title>机器学习之BP算法 - Fitz的博客</title>
     <meta name="author" content="Fitz">
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg"},"articleBody":"Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.\n\n\nQuick StartCreate a new post1$ hexo new \"My New Post\"\nMore info: Writing\nRun server1$ hexo server\nMore info: Server\nGenerate static files1$ hexo generate\nMore info: Generating\nDeploy to remote sites1$ hexo deploy\nMore info: Deployment\n","dateCreated":"2018-10-03T13:21:09+08:00","dateModified":"2018-10-03T19:43:21+08:00","datePublished":"2018-10-03T13:21:09+08:00","description":"Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.","headline":"Hello World","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/10/03/hello-world/"},"publisher":{"@type":"Organization","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg","logo":{"@type":"ImageObject","url":"cover.jpg"}},"url":"http://yoursite.com/2018/10/03/hello-world/"}</script>
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg"},"articleBody":"神经网络 Back Propagation 算法相关公式的推导以及具体代码实现\n\n\n从一个具体的、简单的网络模型来一步一步推导BP公式\n网络结构介绍最简单的神经网络，包括输入层、隐藏层、输出层三层，其中，我们规定\n\n输入层 3 个神经元\n隐藏层 5 个神经元\n输出层 3个神经元\n\n其中输入层、隐藏层各包含一个 bias 单元，\n最终的神经网络结构如下图所示：\n\n网络参数输入样本$ \\vec a = (x_1, x_2, x_3)$\n第一层网络参数$ W^{(1)} = \\begin{bmatrix} W_{(x_1, 4)} &amp; W_{(x_1, 5)} &amp; W_{(x_1, 6)} &amp; W_{(x_1, 7)} &amp; W_{(x_1, 8)}\\ W_{(x_2, 4)} &amp; W_{(x_2, 5)} &amp; W_{(x_2, 6)} &amp; W_{(x_2, 7)} &amp; W_{(x_2,  8)} \\ W_{(x_3, 4)} &amp; W_{(x_3, 5)}  &amp; W_{(x_3, 6)}  &amp; W_{(x_3, 7)}  &amp; W_{(x_3, 8)}\\end{bmatrix}$\n$ b^{(1)} = \\begin{bmatrix} b_1 &amp;  b_2 &amp; b_3 &amp; b_4  &amp; b_5 \\end{bmatrix}$\n第二层网络参数$W^{(2)} = \\begin{bmatrix}W_{(4, 9)} &amp; W_{(4, 10)} &amp; W_{(4, 11)}\\ W_{(15 9)} &amp; W_{(5, 10)} &amp; W_{(5, 11)}\\ W_{(6, 9)} &amp; W_{(6, 10)} &amp; W_{(6, 11)}\\ W_{(7, 9)} &amp; W_{(7, 10)} &amp; W_{(7, 11)}\\ W_{(8, 9)} &amp; W_{(8, 10)} &amp; W_{(8, 11)}\\end{bmatrix}$\n$b^{(2)} = \\begin{bmatrix}b_6 &amp; b_7 &amp; b_8\\end{bmatrix}$\n前向传播","dateCreated":"2018-10-03T19:46:18+08:00","dateModified":"2018-10-03T20:49:29+08:00","datePublished":"2018-10-03T19:46:18+08:00","description":"神经网络 Back Propagation 算法相关公式的推导以及具体代码实现","headline":"机器学习之BP算法","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/10/03/机器学习之BP算法/"},"publisher":{"@type":"Organization","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg","logo":{"@type":"ImageObject","url":"cover.jpg"}},"url":"http://yoursite.com/2018/10/03/机器学习之BP算法/","keywords":"Machine Learning"}</script>
+    <meta name="description" content="神经网络 Back Propagation 算法相关公式的推导以及具体代码实现">
+<meta name="keywords" content="Machine Learning">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2018/10/03/hello-world/index.html">
+<meta property="og:title" content="机器学习之BP算法">
+<meta property="og:url" content="http://yoursite.com/2018/10/03/机器学习之BP算法/index.html">
 <meta property="og:site_name" content="Fitz的博客">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta property="og:description" content="神经网络 Back Propagation 算法相关公式的推导以及具体代码实现">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-10-03T11:43:21.040Z">
+<meta property="og:image" content="http://yoursite.com/img/机器学习之BP算法/1.png">
+<meta property="og:updated_time" content="2018-10-03T12:49:29.655Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta name="twitter:title" content="机器学习之BP算法">
+<meta name="twitter:description" content="神经网络 Back Propagation 算法相关公式的推导以及具体代码实现">
+<meta name="twitter:image" content="http://yoursite.com/img/机器学习之BP算法/1.png">
     
     
         
@@ -210,12 +213,12 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            Hello World
+            机器学习之BP算法
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2018-10-03T13:21:09+08:00">
+    <time datetime="2018-10-03T19:46:18+08:00">
 	
 		    Oct 03, 2018
     	
@@ -229,23 +232,37 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+            <p>神经网络 Back Propagation 算法相关公式的推导以及具体代码实现</p>
 <a id="more"></a>
-<h1 id="table-of-contents">Table of Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+<h1 id="table-of-contents">Table of Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#网络结构介绍"><span class="toc-text">网络结构介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#网络参数"><span class="toc-text">网络参数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#输入样本"><span class="toc-text">输入样本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#第一层网络参数"><span class="toc-text">第一层网络参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#第二层网络参数"><span class="toc-text">第二层网络参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前向传播"><span class="toc-text">前向传播</span></a></li></ol>
+<p>从一个具体的、简单的网络模型来一步一步推导BP公式</p>
+<h2 id="网络结构介绍"><a href="#网络结构介绍" class="headerlink" title="网络结构介绍"></a>网络结构介绍</h2><p>最简单的神经网络，包括输入层、隐藏层、输出层三层，其中，我们规定</p>
+<ul>
+<li>输入层 3 个神经元</li>
+<li>隐藏层 5 个神经元</li>
+<li>输出层 3个神经元</li>
+</ul>
+<p>其中输入层、隐藏层各包含一个 bias 单元，</p>
+<p>最终的神经网络结构如下图所示：</p>
+<p><img src="/img/机器学习之BP算法/1.png" alt="网络结构"></p>
+<h2 id="网络参数"><a href="#网络参数" class="headerlink" title="网络参数"></a>网络参数</h2><h3 id="输入样本"><a href="#输入样本" class="headerlink" title="输入样本"></a>输入样本</h3><p>$ \vec a = (x_1, x_2, x_3)$</p>
+<h3 id="第一层网络参数"><a href="#第一层网络参数" class="headerlink" title="第一层网络参数"></a>第一层网络参数</h3><p>$ W^{(1)} = \begin{bmatrix} W_{(x_1, 4)} &amp; W_{(x_1, 5)} &amp; W_{(x_1, 6)} &amp; W_{(x_1, 7)} &amp; W_{(x_1, 8)}\ W_{(x_2, 4)} &amp; W_{(x_2, 5)} &amp; W_{(x_2, 6)} &amp; W_{(x_2, 7)} &amp; W_{(x_2,  8)} \ W_{(x_3, 4)} &amp; W_{(x_3, 5)}  &amp; W_{(x_3, 6)}  &amp; W_{(x_3, 7)}  &amp; W_{(x_3, 8)}\end{bmatrix}$</p>
+<p>$ b^{(1)} = \begin{bmatrix} b_1 &amp;  b_2 &amp; b_3 &amp; b_4  &amp; b_5 \end{bmatrix}$</p>
+<h3 id="第二层网络参数"><a href="#第二层网络参数" class="headerlink" title="第二层网络参数"></a>第二层网络参数</h3><p>$W^{(2)} = \begin{bmatrix}W_{(4, 9)} &amp; W_{(4, 10)} &amp; W_{(4, 11)}\ W_{(15 9)} &amp; W_{(5, 10)} &amp; W_{(5, 11)}\ W_{(6, 9)} &amp; W_{(6, 10)} &amp; W_{(6, 11)}\ W_{(7, 9)} &amp; W_{(7, 10)} &amp; W_{(7, 11)}\ W_{(8, 9)} &amp; W_{(8, 10)} &amp; W_{(8, 11)}\end{bmatrix}$</p>
+<p>$b^{(2)} = \begin{bmatrix}b_6 &amp; b_7 &amp; b_8\end{bmatrix}$</p>
+<h2 id="前向传播"><a href="#前向传播" class="headerlink" title="前向传播"></a>前向传播</h2>
             
 
         </div>
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="../../../../tags/Machine-Learning/">Machine Learning</a>
+
+            </div>
         
         
             <div class="post-actions-wrap">
@@ -253,8 +270,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="../机器学习之BP算法/" data-tooltip="机器学习之BP算法" aria-label="PREVIOUS: 机器学习之BP算法">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -262,7 +278,8 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="../hello-world/" data-tooltip="Hello World" aria-label="NEXT: Hello World">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -314,8 +331,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="../机器学习之BP算法/" data-tooltip="机器学习之BP算法" aria-label="PREVIOUS: 机器学习之BP算法">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -323,7 +339,8 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="../hello-world/" data-tooltip="Hello World" aria-label="NEXT: Hello World">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
