@@ -1,0 +1,439 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Fitz的博客">
+    <title>Bias-Variance trade-off - Fitz的博客</title>
+    <meta name="author" content="Fitz">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg"},"articleBody":"评估模型、诊断模型、改进模型\n\n\n评估模型首先将数据分为三部分：\n\n训练集 (train set)\n交叉验证集 (cross validation set)\n测试集 (test set)\n\n通过训练集将 多个模型 训练完成之后，对交叉验证集计算得出 『交叉验证误差』，选取误差最小的模型，对测试集进行计算得出 『泛化误差』。用均方误差来表示：\nJ_{train}(\\theta) = \\frac{1}{2m}\\sum\\limits_{i=1}^{m}{(h_{\\theta}(x^{(i)}) - y^{(i)})^2}J_{cv}(\\theta) = \\frac{1}{2m_{cv}}\\sum\\limits_{i=1}^{m_{cv}}{(h_{\\theta}(x_{cv}^{(i)}) - y_{cv}^{(i)})^2}J_{test}(\\theta) = \\frac{1}{2m_{test}}\\sum\\limits_{i=1}^{m_{test}}{(h_{\\theta}(x_{test}^{(i)}) - y_{test}^{(i)})^2}诊断模型当模型表现不理想时，需要\n","dateCreated":"2018-10-05T15:16:25+08:00","dateModified":"2018-10-05T16:48:32+08:00","datePublished":"2018-10-05T15:16:25+08:00","description":"评估模型、诊断模型、改进模型","headline":"Bias-Variance trade-off","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/10/05/Bias-Variance-trade-off/"},"publisher":{"@type":"Organization","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg","logo":{"@type":"ImageObject","url":"cover.jpg"}},"url":"http://yoursite.com/2018/10/05/Bias-Variance-trade-off/","keywords":"Machine Learning"}</script>
+    <meta name="description" content="评估模型、诊断模型、改进模型">
+<meta name="keywords" content="Machine Learning">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Bias-Variance trade-off">
+<meta property="og:url" content="http://yoursite.com/2018/10/05/Bias-Variance-trade-off/index.html">
+<meta property="og:site_name" content="Fitz的博客">
+<meta property="og:description" content="评估模型、诊断模型、改进模型">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-10-05T08:48:32.422Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bias-Variance trade-off">
+<meta name="twitter:description" content="评估模型、诊断模型、改进模型">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://yoursite.com../../../../assets/images/cover.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="../../../../assets/css/style-du2xmrqdqrl2ollgeiw050kpl6l4nbyz7bumjuurjgsxyopifvukebxc9lqe.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="../../../../ ">Fitz的博客</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="../../../../assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="3">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="../../../../#about">
+                    <img class="sidebar-profile-picture" src="../../../../assets/images/cover.jpg" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Fitz</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>SDU Master</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="../../../../ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="../../../../all-categories"
+                            
+                            title="categories"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="../../../../all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="../../../../all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/Fitz1003Miao" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:fitz1003m@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Bias-Variance trade-off
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2018-10-05T15:16:25+08:00">
+	
+		    Oct 05, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>评估模型、诊断模型、改进模型</p>
+<a id="more"></a>
+<h1 id="table-of-contents">文章目录</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#评估模型"><span class="toc-text">评估模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#诊断模型"><span class="toc-text">诊断模型</span></a></li></ol>
+<h2 id="评估模型"><a href="#评估模型" class="headerlink" title="评估模型"></a>评估模型</h2><p>首先将数据分为三部分：</p>
+<ol>
+<li>训练集 (train set)</li>
+<li>交叉验证集 (cross validation set)</li>
+<li>测试集 (test set)</li>
+</ol>
+<p>通过训练集将 多个模型 训练完成之后，对交叉验证集计算得出 『交叉验证误差』，选取误差最小的模型，对测试集进行计算得出 『泛化误差』。用均方误差来表示：</p>
+<script type="math/tex; mode=display">J_{train}(\theta) = \frac{1}{2m}\sum\limits_{i=1}^{m}{(h_{\theta}(x^{(i)}) - y^{(i)})^2}</script><script type="math/tex; mode=display">J_{cv}(\theta) = \frac{1}{2m_{cv}}\sum\limits_{i=1}^{m_{cv}}{(h_{\theta}(x_{cv}^{(i)}) - y_{cv}^{(i)})^2}</script><script type="math/tex; mode=display">J_{test}(\theta) = \frac{1}{2m_{test}}\sum\limits_{i=1}^{m_{test}}{(h_{\theta}(x_{test}^{(i)}) - y_{test}^{(i)})^2}</script><h2 id="诊断模型"><a href="#诊断模型" class="headerlink" title="诊断模型"></a>诊断模型</h2><p>当模型表现不理想时，需要</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="../../../../tags/Machine-Learning/">Machine Learning</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="../../03/机器学习之BP算法/" data-tooltip="机器学习之BP算法" aria-label="NEXT: 机器学习之BP算法">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="文章目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 Fitz. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="../../03/机器学习之BP算法/" data-tooltip="机器学习之BP算法" aria-label="NEXT: 机器学习之BP算法">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="文章目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <i id="btn-close-shareoptions" class="fa fa-times"></i>
+    <ul class="share-options">
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="../../../../assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Fitz</h4>
+        
+            <div id="about-card-bio"><p>SDU Master</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Student</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                QingDao, CHN
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('../../../../assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="../../../../assets/js/script-vufjrm3fmbuttogo1hxuu0w9w0sesk5iyysjuguc2hdhufot9szxg8twijry.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> --!>
+</body>
+</html>
