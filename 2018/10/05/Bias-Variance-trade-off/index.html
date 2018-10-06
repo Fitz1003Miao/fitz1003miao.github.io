@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg"},"articleBody":"评估模型、诊断模型、改进模型\n\n\n评估模型首先将数据分为三部分：\n\n训练集 (train set)\n交叉验证集 (cross validation set)\n测试集 (test set)\n\n通过训练集将 多个模型 训练完成之后，对交叉验证集计算得出 『交叉验证误差』，选取误差最小的模型，对测试集进行计算得出 『泛化误差』。用均方误差来表示：\nJ_{train}(\\theta) = \\frac{1}{2m}\\sum\\limits_{i=1}^{m}{(h_{\\theta}(x^{(i)}) - y^{(i)})^2}J_{cv}(\\theta) = \\frac{1}{2m_{cv}}\\sum\\limits_{i=1}^{m_{cv}}{(h_{\\theta}(x_{cv}^{(i)}) - y_{cv}^{(i)})^2}J_{test}(\\theta) = \\frac{1}{2m_{test}}\\sum\\limits_{i=1}^{m_{test}}{(h_{\\theta}(x_{test}^{(i)}) - y_{test}^{(i)})^2}诊断模型当模型表现不理想时，需要\n","dateCreated":"2018-10-05T15:16:25+08:00","dateModified":"2018-10-05T16:48:32+08:00","datePublished":"2018-10-05T15:16:25+08:00","description":"评估模型、诊断模型、改进模型","headline":"Bias-Variance trade-off","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/10/05/Bias-Variance-trade-off/"},"publisher":{"@type":"Organization","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg","logo":{"@type":"ImageObject","url":"cover.jpg"}},"url":"http://yoursite.com/2018/10/05/Bias-Variance-trade-off/","keywords":"Machine Learning"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg"},"articleBody":"评估模型、诊断模型、改进模型\n\n\n评估模型训练模型时，我们采用『梯度下降』等优化方法对模型参数进行优化，那么当模型收敛之后，在训练的数据集上的loss会非常低，但是这并不代表训练好的模型具有『泛化』能力。所以我们需要通过别的方法来评估模型。\n首先将数据分为三部分：\n\n训练集 (train set)\n交叉验证集 (cross validation set)\n测试集 (test set)\n\n通过训练集将 多个模型 训练完成之后，对交叉验证集计算得出 『交叉验证误差』，选取误差最小的模型，对测试集进行计算得出 『泛化误差』。用均方误差来表示：\nJ_{train}(\\theta) = \\frac{1}{2m}\\sum\\limits_{i=1}^{m}{(h_{\\theta}(x^{(i)}) - y^{(i)})^2}J_{cv}(\\theta) = \\frac{1}{2m_{cv}}\\sum\\limits_{i=1}^{m_{cv}}{(h_{\\theta}(x_{cv}^{(i)}) - y_{cv}^{(i)})^2}J_{test}(\\theta) = \\frac{1}{2m_{test}}\\sum\\limits_{i=1}^{m_{test}}{(h_{\\theta}(x_{test}^{(i)}) - y_{test}^{(i)})^2}诊断模型当模型表现不理想时，需要来诊断究竟是出现了『under fitting』还是『over fitting』？\n\nunder fitting 表明模型的拟合能力不够强，此时会出现比较高的偏差(bias)。\nover fitting表明模型对于特定数据的拟合能力过强，通俗来说就是把训练数据本身的特性给记住了，而遇到之前没有训练过的数据会表现出比较差的效果。\n\n相关符号的介绍：\n\n\n\n\n符号\n含义\n\n\n\n\nx\n测试样本\n\n\nD\n数据集\n\n\n$y_D$\nx在数据集中的标记\n\n\ny\nx的真实标记\n\n\nf\n训练集D学得的模型\n\n\nf(x;D)\n由训练集D学得的模型f对x的预测输出\n\n\n$\\overline f(x)$\n模型f对x的 期望预测 输出\n\n\n\n\n偏差(bias)\n\n预测值（估计值）的期望与真实值之间的差距，\nbias(x) = \\overline{f}(x) - y\\overline{f}(x) = E_D[f(x;D)]偏差描述了 一批模型 (这里一批模型指的是通过对同一个训练集进行科学采样得到的不同数据集进行训练，从而可以得到不同的模型) 对本训练集的拟合程度，拟合程度越好，偏差越低。\n\n方差(variance):  \n\n统计学中，方差描述的是随机变量的离散程度，也就是该随机变量在其期望值附近的波动程度。\n在机器学习中，方差描述的是 一批模型 对于同一测试集的测试结果的波动程度。\nvar(x) = E_D[(f(x;D) - \\overline{f}(x))^2]\n噪声(noise):\n\n真实值与数据集中真实标记的偏差，这个值的大小决定了模型的上限。\n\\epsilon = E_D[(y_D - y)]\n","dateCreated":"2018-10-05T15:16:25+08:00","dateModified":"2018-10-06T11:30:58+08:00","datePublished":"2018-10-05T15:16:25+08:00","description":"评估模型、诊断模型、改进模型","headline":"Bias-Variance trade-off","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/10/05/Bias-Variance-trade-off/"},"publisher":{"@type":"Organization","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg","logo":{"@type":"ImageObject","url":"cover.jpg"}},"url":"http://yoursite.com/2018/10/05/Bias-Variance-trade-off/","keywords":"Machine Learning"}</script>
     <meta name="description" content="评估模型、诊断模型、改进模型">
 <meta name="keywords" content="Machine Learning">
 <meta property="og:type" content="blog">
@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="Fitz的博客">
 <meta property="og:description" content="评估模型、诊断模型、改进模型">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-10-05T08:48:32.422Z">
+<meta property="og:updated_time" content="2018-10-06T03:30:58.904Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Bias-Variance trade-off">
 <meta name="twitter:description" content="评估模型、诊断模型、改进模型">
@@ -233,14 +233,74 @@
             <p>评估模型、诊断模型、改进模型</p>
 <a id="more"></a>
 <h1 id="table-of-contents">文章目录</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#评估模型"><span class="toc-text">评估模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#诊断模型"><span class="toc-text">诊断模型</span></a></li></ol>
-<h2 id="评估模型"><a href="#评估模型" class="headerlink" title="评估模型"></a>评估模型</h2><p>首先将数据分为三部分：</p>
+<h2 id="评估模型"><a href="#评估模型" class="headerlink" title="评估模型"></a>评估模型</h2><p>训练模型时，我们采用『梯度下降』等优化方法对模型参数进行优化，那么当模型收敛之后，在训练的数据集上的loss会非常低，但是这并不代表训练好的模型具有『泛化』能力。所以我们需要通过别的方法来评估模型。</p>
+<p>首先将数据分为三部分：</p>
 <ol>
 <li>训练集 (train set)</li>
 <li>交叉验证集 (cross validation set)</li>
 <li>测试集 (test set)</li>
 </ol>
 <p>通过训练集将 多个模型 训练完成之后，对交叉验证集计算得出 『交叉验证误差』，选取误差最小的模型，对测试集进行计算得出 『泛化误差』。用均方误差来表示：</p>
-<script type="math/tex; mode=display">J_{train}(\theta) = \frac{1}{2m}\sum\limits_{i=1}^{m}{(h_{\theta}(x^{(i)}) - y^{(i)})^2}</script><script type="math/tex; mode=display">J_{cv}(\theta) = \frac{1}{2m_{cv}}\sum\limits_{i=1}^{m_{cv}}{(h_{\theta}(x_{cv}^{(i)}) - y_{cv}^{(i)})^2}</script><script type="math/tex; mode=display">J_{test}(\theta) = \frac{1}{2m_{test}}\sum\limits_{i=1}^{m_{test}}{(h_{\theta}(x_{test}^{(i)}) - y_{test}^{(i)})^2}</script><h2 id="诊断模型"><a href="#诊断模型" class="headerlink" title="诊断模型"></a>诊断模型</h2><p>当模型表现不理想时，需要</p>
+<script type="math/tex; mode=display">J_{train}(\theta) = \frac{1}{2m}\sum\limits_{i=1}^{m}{(h_{\theta}(x^{(i)}) - y^{(i)})^2}</script><script type="math/tex; mode=display">J_{cv}(\theta) = \frac{1}{2m_{cv}}\sum\limits_{i=1}^{m_{cv}}{(h_{\theta}(x_{cv}^{(i)}) - y_{cv}^{(i)})^2}</script><script type="math/tex; mode=display">J_{test}(\theta) = \frac{1}{2m_{test}}\sum\limits_{i=1}^{m_{test}}{(h_{\theta}(x_{test}^{(i)}) - y_{test}^{(i)})^2}</script><h2 id="诊断模型"><a href="#诊断模型" class="headerlink" title="诊断模型"></a>诊断模型</h2><p>当模型表现不理想时，需要来诊断究竟是出现了『under fitting』还是『over fitting』？</p>
+<ul>
+<li>under fitting 表明模型的拟合能力不够强，此时会出现比较高的偏差(bias)。</li>
+<li>over fitting表明模型对于特定数据的拟合能力过强，通俗来说就是把训练数据本身的特性给记住了，而遇到之前没有训练过的数据会表现出比较差的效果。</li>
+</ul>
+<p>相关符号的介绍：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">符号</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">x</td>
+<td style="text-align:center">测试样本</td>
+</tr>
+<tr>
+<td style="text-align:center">D</td>
+<td style="text-align:center">数据集</td>
+</tr>
+<tr>
+<td style="text-align:center">$y_D$</td>
+<td style="text-align:center">x在数据集中的标记</td>
+</tr>
+<tr>
+<td style="text-align:center">y</td>
+<td style="text-align:center">x的真实标记</td>
+</tr>
+<tr>
+<td style="text-align:center">f</td>
+<td style="text-align:center">训练集D学得的模型</td>
+</tr>
+<tr>
+<td style="text-align:center">f(x;D)</td>
+<td style="text-align:center">由训练集D学得的模型f对x的预测输出</td>
+</tr>
+<tr>
+<td style="text-align:center">$\overline f(x)$</td>
+<td style="text-align:center">模型f对x的 期望预测 输出</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>偏差(bias)</p>
+<blockquote>
+<p>预测值（估计值）的期望与真实值之间的差距，</p>
+<script type="math/tex; mode=display">bias(x) = \overline{f}(x) - y</script><script type="math/tex; mode=display">\overline{f}(x) = E_D[f(x;D)]</script><p>偏差描述了 一批模型 (这里一批模型指的是通过对同一个训练集进行科学采样得到的不同数据集进行训练，从而可以得到不同的模型) 对本训练集的拟合程度，拟合程度越好，偏差越低。</p>
+</blockquote>
+<p>方差(variance):  </p>
+<blockquote>
+<p>统计学中，方差描述的是随机变量的离散程度，也就是该随机变量在其期望值附近的波动程度。</p>
+<p>在机器学习中，方差描述的是 一批模型 对于同一测试集的测试结果的波动程度。</p>
+<script type="math/tex; mode=display">var(x) = E_D[(f(x;D) - \overline{f}(x))^2]</script></blockquote>
+<p>噪声(noise):</p>
+<blockquote>
+<p>真实值与数据集中真实标记的偏差，这个值的大小决定了模型的上限。</p>
+<script type="math/tex; mode=display">\epsilon = E_D[(y_D - y)]</script></blockquote>
 
             
 
