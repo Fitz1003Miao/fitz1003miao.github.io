@@ -1,0 +1,511 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Fitz的博客">
+    <title>SVM学习笔记 - Fitz的博客</title>
+    <meta name="author" content="Fitz">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg"},"articleBody":"记录自学SVM的过程……\n\n\n了解SVMSVM的本质是一种二分类模型，基本模型可定义为特征空间上的间隔最大的线性分类器。即寻找一个距离两类样本最远的平面或者超平面。\n线性分类器线性分类器的目的是寻找一个平面或超平面将给定的数据点分成两个不同的类，用 x 表示特征，y表示类别(可取任意不同的两个值，但是在这里为了计算方便取1 / -1(下文会解释原因)，表示两个不同的类)。这个超平面的方程可以用：\nw^Tx + b =0来表示，这个分类器可以用分类函数 $f(x) = w^T x + b$来表示\n\n满足$f(x) = 0$的点为分界线上的点。\n满足$f(x) &gt; 0$的点属于一类。\n满足$f(x) &lt; 0$ 属于另一类。\n\n用二维平面的图来表示，如下图所示:\n\nSVMSVM的本质就是寻找这么一个超平面 — 距离两类数据最远的的超平面，因为距离边界的距离越远表明对这个点分类的置信度越高。那么这个距离如何表示呢？点到超平面的距离可以用如下推导：\n设有一点x，在超平面上的投影为x’,则$x-x’$与超平面的法向量$\\overrightarrow{w}$平行，则有\n\\frac{x-x'}{\\overrightarrow{w}} = \\frac{||x-x'||}{||\\overrightarrow{w}||}其中：\n\n$||x-x’||$是表示点到超平面的距离\n\n$\\overrightarrow{w}$表示与$x-x’$方向相同的法向量\n\n\n那么有 ||x - x'|| = \\frac{(x-x')||\\overrightarrow{w}||}{\\overrightarrow{w}}\n同时因为x‘是在超平面上的点，所以它一定满足: $w^Tx’+b = 0$ 所以有\n{\\overrightarrow{w}}^T{\\overrightarrow{w}}||x - x'|| = {\\overrightarrow{w}}^T(x-x')||\\overrightarrow{w}||||{\\overrightarrow{w}}||^2 ||x-x'|| =  ({\\overrightarrow{w}}^Tx+b-{\\overrightarrow{w}}^Tx'-b)||\\overrightarrow{w}|| =({\\overrightarrow{w}}^Tx+b)||\\overrightarrow{w}||||x-x'|| = \\frac{({\\overrightarrow{w}}^Tx+b)}{||{\\overrightarrow{w}}||}\n在这里重点说明一下，二分类的标签 y 通常取1和-1，原因如下：\n\n本质来说，对于二分类问题，y是可以取任意两个不同值的\n而支持向量机去求解二分类问题。目标是寻找一个超平面，而超平面两类对于超平面的函数值的符号刚好相反。\n当我们将y取1和-1之后，那么 y  f(x) &gt; 0就可以很方便的表示平面是否正确分类样本数据，并且 ||f(x)|| = y  f(x) 使得式子更简洁。\n\n\n所以点到超平面的距离为：\n\\widetilde{d} = \\frac{yf(x)}{||w||}所以SVM的目标函数可以定义为：\nmax \\widetilde{d}s.t. y_i(w^Tx_i+b) = d_i \\geq d,i = 1,.....,n这里$d = yf(x)$, $\\widetilde{d} = \\frac{d}{||w||}$\n而对于一个超平面来说，等比例的改变w和b是不会影响超平面的。所以我们可以令$yf(x) = 1$,理由如下：\n\n进行变量代换，将$w’ = w/b$和$b’ = b/d$代替上面的w和b，那么我们可以得到 d’ = 1,此时$\\widetilde{d’} = \\frac{1}{||w’||}$,约束条件变为：$y_i(w’Tx_i+b’) \\geq 1$\n\n那么问题变成了，在 $y_i(w’Tx_i+b’) \\geq 1$的条件下，求使得$\\frac{1}{||w’||}$最大的 w, b.而由于w,b和w’,b’均表示该超平面，所以SVM的目标函数变为：\nmax \\frac{1}{||w||}s.t. y_i(w^Tx_i+b) = d_i \\geq 1,i = 1,.....,n问题求解由上节的推导我们可以得到，考虑我们的目标：\nmax \\frac{1}{||w||}s.t. y_i(w^Tx_i+b) = d_i \\geq 1,i = 1,.....,n等价于：\nmin\\frac{1}{2}||w||^2s.t. y_i(w^Tx_i+b) = d_i \\geq 1,i = 1,.....,n这个问题的求解有两种方法：\n\n这是一个凸二次规划问题，这个问题可以用现成的QP(Quadratic Programming)优化包来求解。\n用拉格朗日对偶性变换到对偶变量的优化问题，即通过求解与原问题等价的对偶问题得到原始问题的最优解，这就是线性可分条件下支持向量机的对偶算法。\n\n定义拉格朗日函数：\n\\iota (\\alpha, w, b) = \\frac{1}{2} ||w||^2 - \\sum_{i=1}^{n} \\alpha_i(y_i(w^Tx_i+b_i) - 1)然后令\n\\theta(w) = max_{\\alpha_i \\geq 0} \\iota (\\alpha, w, b)若$y_i(w^Tx_i+b) &lt; 1$，则显然有$\\theta(w) = \\infty $\n所以当约束条件满足时有，$\\theta(w) = \\frac{1}{2}||w||^2$\n目标函数就变成了：\nmin_{w,b} \\theta(w) = min_{w,b} max_{\\alpha_i \\geq 0} \\iota(w,b,\\alpha) = p^*这里用$p^*$表示这个问题的最优值，且和最初的问题是等价的，如果直接求解，那么一上来便得面对w和b两个参数，而$\\alpha_i$又是不等式约束，这个求解过程不好做，不妨转化为求对偶问题，这个转化过程以后在学『凸优化』的时候我会重点叙述一下，问题变成：\nmax_{\\alpha_i \\geq 0}min_{w,b}\\iota(w, b, \\alpha) = d^*下面先求$\\iota$对w、b的极小，再求$\\iota$对$\\alpha$的极大。\n\\frac{\\partial L}{\\partial w} = 0 \\Rightarrow w= \\sum_{i=1}^{n}\\alpha_iy_ix_i\\frac{\\partial L}{\\partial b} = 0 \\Rightarrow \\sum_{i=1}^{n} \\alpha_iy_i = 0将结果代入 $\\iota (\\alpha, w, b) = \\frac{1}{2} ||w||^2 - \\sum_{i=1}^{n} \\alpha_i(y_i(w^Tx_i+b_i) - 1)$\n可以得到：$\\iota (\\alpha, w, b) = \\frac{1}{2}\\sum_{i,j=1}^{n}\\alpha_i\\alpha_jy_iy_jx_i^Tx_j - \\sum_{i,j=1}^{n}\\alpha_i\\alpha_jy_iy_jx_i^Tx_j - b\\sum_{i=1}^{n}\\alpha_iy_i+\\sum_{i=1}^{n}\\alpha_i$\n\\iota (\\alpha, w, b) = \\sum_{i=1}^{n}\\alpha_i - \\frac{1}{2}\\sum_{i,j=1}^{n}\\alpha_i\\alpha_jy_iy_jx_i^Tx_j再求对$\\alpha$的极大，根据SMO算法求解拉格朗日乘子 $\\alpha$，篇幅问题就不赘述了，有兴趣可以看一看参考文章。\nw^* = \\sum_{i=1}^{n}\\alpha_iy_ix_ib^* = -\\frac{max_{i:y_i=-1}w^{*T}x_i + min_{i:y_i=1}w^{*T}x_i}{2}f(x) = w^{*T}x+b^* = \\sum_{i=1}^{n}\\alpha_iy_i + b^*这个时候满足$\\theta(w) = \\frac{1}{2}||w||^2$\n即，$\\iota(w, b, \\alpha) = \\frac{1}{2}||w||^2$\n那么对于$y_i(w^Tx_i+b)\\neq 1$的数据，满足$\\alpha_i$为0。即不会对超平面产生影响，所以只有满足$y_i(w^Tx_i+b)= 1$的数据称为Support Vector。\n核函数在处理数据中会遇到线性不可分的数据，这个时候可以通过将数据映射到高维空间，来解决在原始空间中线性不可分的问题。从上节我们可以知道：\nf(x) = w^{*T}x+b^* = \\sum_{i=1}^{n}\\alpha_iy_i + b^*而处理线性不可分数据的步骤应该分为如下两步：\n\n使用非线性映射将数据变换到一个特征空间$f$。\n在特征空间中使用线性分类器分类。\n\nSounds Good……但是这种步骤的话会出现一个问题，当原始特征空间维度增大时，新特征空间的维度会呈指数趋势增长，这样计算难度会很大。观察发现SVM分类函数计算的过程中，需要用到向量的地方总是以内积的形式出现，所以可以将上述两步合成一步，将分类函数改为：\nf(x) = \\sum_{i=1}^{n}\\alpha_iy_iK(x_i,x) + b^*由以下dual问题计算得到：\nmax_\\alpha \\sum_{i=1}^{n}\\alpha_i - \\frac{1}{2}\\sum_{i,j=1}^{n}\\alpha_i\\alpha_jy_iy_jK(xi, x)s.t. \\alpha_i \\geq 0,i=1.....n\\sum_{i=1}^{n}\\alpha_iy_i=0常用的几个核函数：\n\n多项式核$K(x_1, x_2) = ( + R)^d$，这个空间的维度是$C_{m+d}^{d}$，其中m是原始空间的维度。\n高斯核 $K(x_1, x_2) = exp(-||x_1-x_2||^2/2\\sigma^2)$,可以将空间映射为无限维度。\n线性核 $K(x_1, x_2) = $\n\n松弛变量处理数据时，除了遇到原始特征空间线性不可分的情况以外，还会遇到数据里面有噪声，偏离正常位置很远的数据点，称为 outlier。超平面本来就是由少数几个Support  Vector组成，如果这些Support Vector中存在outlier，会对超平面的选择产生非常大的影响，甚至会找不到超平面。\n\n用黑圈圈起来的那个蓝点是一个 outlier，它偏离了自己原本所应该在的那个半空 间，如果直接忽略掉它的话，原来的分隔超平面还是挺好的，但是由于这个 outlier 的出现，导致分隔超平面不得不被挤歪了，变成途中黑色虚线所示(这只是一个示意图， 并没有严格计算精确坐标)，同时 margin 也相应变小了。当然，更严重的情况是，如果 这个outlier再往右上移动一些距离的话，我们将无法构造出能将数据分开的超平面来。 \n为了处理这种情况，SVM允许数据点在一定程度上偏离一下超平面。例如图中，黑色实线所对应的距离，就是该outlier偏离的距离，如果把它移动回来，就刚好落在原来的超平面上，而不会使得超平面发生变形了。\n之前没有考虑outlier时候的约束条件为:\ny_i(w^Tx_i+b) \\geq 1, i = 1.....n而加入outlier考虑之后的约束条件变为:\ny_i(w^Tx_i+b)\\geq1-\\xi _i, i = 1.....n如果我们对$\\xi_i$不加限制的话，那么当$\\xi_i$任意大的时候，任意超平面都符合条件，所以，我们需要对$\\xi_i$加以限制，使得$\\xi_i$的总和最小。那么目标函数变为:\nmin \\frac{1}{2}||w||^2 + C\\sum_{i=1}^{n}\\xi_i$s.t. y_i(w^Tx_i+b) \\geq1-\\xi_i, i=1…..n$\n\\xi_i \\geq 0,i = 1.....n那么我们可以得到新的拉格朗日函数：\n\\iota(w,b,\\xi,\\alpha,\\gamma) = \\frac{1}{2}||w||^2 + C\\sum_{i=1}^{n}\\xi_i - \\sum_{i=1}^{n}{\\alpha_i(y_i(w^Tx_i+b)-1+\\xi_i)} - \\sum_{i=1}^{n}{\\gamma_i\\xi_i}与前面的处理过程类似:\n\\frac{\\partial L}{\\partial w} = 0 \\Rightarrow w = \\sum_{i=0}^{n}{\\alpha_ix_iy_i}\\frac{\\partial L}{\\partial b} = 0 \\Rightarrow \\sum_{i=1}^{n}\\alpha_iy_i = 0\\frac{\\partial L}{\\partial \\xi_i} = 0 \\Rightarrow C-\\alpha_i-\\gamma_i =0 , i = 1.....n将结果代入得到和之前一样的目标函数:\nmax_\\alpha\\sum_{i=1}^{n}\\alpha_i-\\frac{1}{2}\\sum_{i,j=1}^{n}\\alpha_i\\alpha_jy_iy_jx_i^Tx_j但是由于有限制条件:$C-\\alpha_i-\\gamma_i = 0$且$\\gamma_i \\geq 0$，则$\\alpha_i \\leq C$,所以dual问题变成了:\nmax_\\alpha\\sum_{i=1}^{n}\\alpha_i-\\frac{1}{2}\\sum_{i,j=1}^{n}\\alpha_i\\alpha_jy_iy_jx_i^Tx_js.t. 0 \\leq \\alpha_i\\leq C,i=1.....n\\sum_{i=1}^{n}\\alpha_i = 0总结SVM本质上就是一个分类方法，用$w^Tx+b$定义分类函数，求w、b，寻求最大间隔，引入$\\frac{1}{2}||w||^2$，继而引入拉格朗日因子，化为对拉格朗日乘子$\\alpha$的求解，如此，求w、b与求$\\alpha$等价，而$\\alpha$的求解可以用快速学习算法SMO。至于核函数，是为处理非线性情况，若直接映射到高维计算恐维度爆炸，故在低维计算，等效高维表现。\n参考支持向量机通俗导论（理解SVM的三层境界）\n","dateCreated":"2018-10-16T15:17:30+08:00","dateModified":"2018-10-29T10:04:40+08:00","datePublished":"2018-10-16T15:17:30+08:00","description":"记录自学SVM的过程……","headline":"SVM学习笔记","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/10/16/SVM学习笔记/"},"publisher":{"@type":"Organization","name":"Fitz","sameAs":["https://github.com/Fitz1003Miao","mailto:fitz1003m@gmail.com"],"image":"cover.jpg","logo":{"@type":"ImageObject","url":"cover.jpg"}},"url":"http://yoursite.com/2018/10/16/SVM学习笔记/"}</script>
+    <meta name="description" content="记录自学SVM的过程……">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="SVM学习笔记">
+<meta property="og:url" content="http://yoursite.com/2018/10/16/SVM学习笔记/index.html">
+<meta property="og:site_name" content="Fitz的博客">
+<meta property="og:description" content="记录自学SVM的过程……">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/img/SVM学习笔记/1.png">
+<meta property="og:image" content="http://yoursite.com/img/SVM学习笔记/2.png">
+<meta property="og:updated_time" content="2018-10-29T02:04:40.740Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SVM学习笔记">
+<meta name="twitter:description" content="记录自学SVM的过程……">
+<meta name="twitter:image" content="http://yoursite.com/img/SVM学习笔记/1.png">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://yoursite.com../../../../assets/images/cover.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="../../../../assets/css/style-du2xmrqdqrl2ollgeiw050kpl6l4nbyz7bumjuurjgsxyopifvukebxc9lqe.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="../../../../ ">Fitz的博客</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="../../../../assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="3">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="../../../../#about">
+                    <img class="sidebar-profile-picture" src="../../../../assets/images/cover.jpg" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Fitz</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>SDU Master</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="../../../../ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="../../../../all-categories"
+                            
+                            title="categories"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="../../../../all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="../../../../all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/Fitz1003Miao" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:fitz1003m@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            SVM学习笔记
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2018-10-16T15:17:30+08:00">
+	
+		    Oct 16, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>记录自学SVM的过程……</p>
+<a id="more"></a>
+<h1 id="table-of-contents">文章目录</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#了解SVM"><span class="toc-text">了解SVM</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#线性分类器"><span class="toc-text">线性分类器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SVM"><span class="toc-text">SVM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题求解"><span class="toc-text">问题求解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核函数"><span class="toc-text">核函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#松弛变量"><span class="toc-text">松弛变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+<h2 id="了解SVM"><a href="#了解SVM" class="headerlink" title="了解SVM"></a>了解SVM</h2><p>SVM的本质是一种二分类模型，基本模型可定义为特征空间上的间隔最大的线性分类器。即寻找一个距离两类样本最远的平面或者超平面。</p>
+<h3 id="线性分类器"><a href="#线性分类器" class="headerlink" title="线性分类器"></a>线性分类器</h3><p>线性分类器的目的是寻找一个平面或超平面将给定的数据点分成两个不同的类，用 x 表示特征，y表示类别(可取任意不同的两个值，但是在这里为了计算方便取1 / -1(下文会解释原因)，表示两个不同的类)。这个超平面的方程可以用：</p>
+<script type="math/tex; mode=display">w^Tx + b =0</script><p>来表示，这个分类器可以用分类函数 $f(x) = w^T x + b$来表示</p>
+<ol>
+<li>满足$f(x) = 0$的点为分界线上的点。</li>
+<li>满足$f(x) &gt; 0$的点属于一类。</li>
+<li>满足$f(x) &lt; 0$ 属于另一类。</li>
+</ol>
+<p>用二维平面的图来表示，如下图所示:</p>
+<p><img src="/img/SVM学习笔记/1.png" alt=""></p>
+<h3 id="SVM"><a href="#SVM" class="headerlink" title="SVM"></a>SVM</h3><p>SVM的本质就是寻找这么一个超平面 — 距离两类数据最远的的超平面，因为距离边界的距离越远表明对这个点分类的置信度越高。那么这个距离如何表示呢？点到超平面的距离可以用如下推导：</p>
+<p>设有一点x，在超平面上的投影为x’,则$x-x’$与超平面的法向量$\overrightarrow{w}$平行，则有</p>
+<script type="math/tex; mode=display">\frac{x-x'}{\overrightarrow{w}} = \frac{||x-x'||}{||\overrightarrow{w}||}</script><p>其中：</p>
+<ol>
+<li><p>$||x-x’||$是表示点到超平面的距离</p>
+</li>
+<li><p>$\overrightarrow{w}$表示与$x-x’$方向相同的法向量</p>
+</li>
+</ol>
+<p>那么有 <script type="math/tex">||x - x'|| = \frac{(x-x')||\overrightarrow{w}||}{\overrightarrow{w}}</script></p>
+<p>同时因为x‘是在超平面上的点，所以它一定满足: $w^Tx’+b = 0$ 所以有</p>
+<script type="math/tex; mode=display">{\overrightarrow{w}}^T{\overrightarrow{w}}||x - x'|| = {\overrightarrow{w}}^T(x-x')||\overrightarrow{w}||</script><script type="math/tex; mode=display">||{\overrightarrow{w}}||^2 ||x-x'|| =  ({\overrightarrow{w}}^Tx+b-{\overrightarrow{w}}^Tx'-b)||\overrightarrow{w}|| =({\overrightarrow{w}}^Tx+b)||\overrightarrow{w}||</script><script type="math/tex; mode=display">||x-x'|| = \frac{({\overrightarrow{w}}^Tx+b)}{||{\overrightarrow{w}}||}</script><blockquote>
+<p>在这里重点说明一下，二分类的标签 y 通常取1和-1，原因如下：</p>
+<ol>
+<li>本质来说，对于二分类问题，y是可以取任意两个不同值的</li>
+<li>而支持向量机去求解二分类问题。目标是寻找一个超平面，而超平面两类对于超平面的函数值的符号刚好相反。</li>
+<li>当我们将y取1和-1之后，那么 y <em> f(x) &gt; 0就可以很方便的表示平面是否正确分类样本数据，并且 ||f(x)|| = y </em> f(x) 使得式子更简洁。</li>
+</ol>
+</blockquote>
+<p>所以点到超平面的距离为：</p>
+<script type="math/tex; mode=display">\widetilde{d} = \frac{yf(x)}{||w||}</script><p>所以SVM的目标函数可以定义为：</p>
+<script type="math/tex; mode=display">max \widetilde{d}</script><script type="math/tex; mode=display">s.t. y_i(w^Tx_i+b) = d_i \geq d,i = 1,.....,n</script><p>这里$d = yf(x)$, $\widetilde{d} = \frac{d}{||w||}$</p>
+<p>而对于一个超平面来说，等比例的改变w和b是不会影响超平面的。所以我们可以令$yf(x) = 1$,理由如下：</p>
+<blockquote>
+<p>进行变量代换，将$w’ = w/b$和$b’ = b/d$代替上面的w和b，那么我们可以得到 d’ = 1,此时$\widetilde{d’} = \frac{1}{||w’||}$,约束条件变为：$y_i(w’Tx_i+b’) \geq 1$</p>
+</blockquote>
+<p>那么问题变成了，在 $y_i(w’Tx_i+b’) \geq 1$的条件下，求使得$\frac{1}{||w’||}$最大的 w, b.而由于w,b和w’,b’均表示该超平面，所以SVM的目标函数变为：</p>
+<script type="math/tex; mode=display">max \frac{1}{||w||}</script><script type="math/tex; mode=display">s.t. y_i(w^Tx_i+b) = d_i \geq 1,i = 1,.....,n</script><h2 id="问题求解"><a href="#问题求解" class="headerlink" title="问题求解"></a>问题求解</h2><p>由上节的推导我们可以得到，考虑我们的目标：</p>
+<script type="math/tex; mode=display">max \frac{1}{||w||}</script><script type="math/tex; mode=display">s.t. y_i(w^Tx_i+b) = d_i \geq 1,i = 1,.....,n</script><p>等价于：</p>
+<script type="math/tex; mode=display">min\frac{1}{2}||w||^2</script><script type="math/tex; mode=display">s.t. y_i(w^Tx_i+b) = d_i \geq 1,i = 1,.....,n</script><p>这个问题的求解有两种方法：</p>
+<ol>
+<li>这是一个凸二次规划问题，这个问题可以用现成的QP(Quadratic Programming)优化包来求解。</li>
+<li>用拉格朗日对偶性变换到对偶变量的优化问题，即通过求解与原问题等价的对偶问题得到原始问题的最优解，这就是线性可分条件下支持向量机的对偶算法。</li>
+</ol>
+<p>定义拉格朗日函数：</p>
+<script type="math/tex; mode=display">\iota (\alpha, w, b) = \frac{1}{2} ||w||^2 - \sum_{i=1}^{n} \alpha_i(y_i(w^Tx_i+b_i) - 1)</script><p>然后令</p>
+<script type="math/tex; mode=display">\theta(w) = max_{\alpha_i \geq 0} \iota (\alpha, w, b)</script><p>若$y_i(w^Tx_i+b) &lt; 1$，则显然有$\theta(w) = \infty $</p>
+<p>所以当约束条件满足时有，$\theta(w) = \frac{1}{2}||w||^2$</p>
+<p>目标函数就变成了：</p>
+<script type="math/tex; mode=display">min_{w,b} \theta(w) = min_{w,b} max_{\alpha_i \geq 0} \iota(w,b,\alpha) = p^*</script><p>这里用$p^*$表示这个问题的最优值，且和最初的问题是等价的，如果直接求解，那么一上来便得面对w和b两个参数，而$\alpha_i$又是不等式约束，这个求解过程不好做，不妨转化为求对偶问题，这个转化过程以后在学『凸优化』的时候我会重点叙述一下，问题变成：</p>
+<script type="math/tex; mode=display">max_{\alpha_i \geq 0}min_{w,b}\iota(w, b, \alpha) = d^*</script><p>下面先求$\iota$对w、b的极小，再求$\iota$对$\alpha$的极大。</p>
+<script type="math/tex; mode=display">\frac{\partial L}{\partial w} = 0 \Rightarrow w= \sum_{i=1}^{n}\alpha_iy_ix_i</script><script type="math/tex; mode=display">\frac{\partial L}{\partial b} = 0 \Rightarrow \sum_{i=1}^{n} \alpha_iy_i = 0</script><p>将结果代入 $\iota (\alpha, w, b) = \frac{1}{2} ||w||^2 - \sum_{i=1}^{n} \alpha_i(y_i(w^Tx_i+b_i) - 1)$</p>
+<p>可以得到：$\iota (\alpha, w, b) = \frac{1}{2}\sum_{i,j=1}^{n}\alpha_i\alpha_jy_iy_jx_i^Tx_j - \sum_{i,j=1}^{n}\alpha_i\alpha_jy_iy_jx_i^Tx_j - b\sum_{i=1}^{n}\alpha_iy_i+\sum_{i=1}^{n}\alpha_i$</p>
+<script type="math/tex; mode=display">\iota (\alpha, w, b) = \sum_{i=1}^{n}\alpha_i - \frac{1}{2}\sum_{i,j=1}^{n}\alpha_i\alpha_jy_iy_jx_i^Tx_j</script><p>再求对$\alpha$的极大，根据SMO算法求解拉格朗日乘子 $\alpha$，篇幅问题就不赘述了，有兴趣可以看一看参考文章。</p>
+<script type="math/tex; mode=display">w^* = \sum_{i=1}^{n}\alpha_iy_ix_i</script><script type="math/tex; mode=display">b^* = -\frac{max_{i:y_i=-1}w^{*T}x_i + min_{i:y_i=1}w^{*T}x_i}{2}</script><script type="math/tex; mode=display">f(x) = w^{*T}x+b^* = \sum_{i=1}^{n}\alpha_iy_i<x_i, x> + b^*</script><p>这个时候满足$\theta(w) = \frac{1}{2}||w||^2$</p>
+<p>即，$\iota(w, b, \alpha) = \frac{1}{2}||w||^2$</p>
+<p>那么对于$y_i(w^Tx_i+b)\neq 1$的数据，满足$\alpha_i$为0。即不会对超平面产生影响，所以只有满足$y_i(w^Tx_i+b)= 1$的数据称为Support Vector。</p>
+<h2 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h2><p>在处理数据中会遇到线性不可分的数据，这个时候可以通过将数据映射到高维空间，来解决在原始空间中线性不可分的问题。从上节我们可以知道：</p>
+<script type="math/tex; mode=display">f(x) = w^{*T}x+b^* = \sum_{i=1}^{n}\alpha_iy_i<x_i, x> + b^*</script><p>而处理线性不可分数据的步骤应该分为如下两步：</p>
+<ol>
+<li>使用非线性映射将数据变换到一个特征空间$f$。</li>
+<li>在特征空间中使用线性分类器分类。</li>
+</ol>
+<p>Sounds Good……但是这种步骤的话会出现一个问题，当原始特征空间维度增大时，新特征空间的维度会呈指数趋势增长，这样计算难度会很大。观察发现SVM分类函数计算的过程中，需要用到向量的地方总是以内积的形式出现，所以可以将上述两步合成一步，将分类函数改为：</p>
+<script type="math/tex; mode=display">f(x) = \sum_{i=1}^{n}\alpha_iy_iK(x_i,x) + b^*</script><p>由以下dual问题计算得到：</p>
+<script type="math/tex; mode=display">max_\alpha \sum_{i=1}^{n}\alpha_i - \frac{1}{2}\sum_{i,j=1}^{n}\alpha_i\alpha_jy_iy_jK(xi, x)</script><script type="math/tex; mode=display">s.t. \alpha_i \geq 0,i=1.....n</script><script type="math/tex; mode=display">\sum_{i=1}^{n}\alpha_iy_i=0</script><p>常用的几个核函数：</p>
+<ol>
+<li>多项式核$K(x_1, x_2) = (<x1,x2> + R)^d$，这个空间的维度是$C_{m+d}^{d}$，其中m是原始空间的维度。</x1,x2></li>
+<li>高斯核 $K(x_1, x_2) = exp(-||x_1-x_2||^2/2\sigma^2)$,可以将空间映射为无限维度。</li>
+<li>线性核 $K(x_1, x_2) = <x_1, x_2="">$</x_1,></li>
+</ol>
+<h2 id="松弛变量"><a href="#松弛变量" class="headerlink" title="松弛变量"></a>松弛变量</h2><p>处理数据时，除了遇到原始特征空间线性不可分的情况以外，还会遇到数据里面有噪声，偏离正常位置很远的数据点，称为 outlier。超平面本来就是由少数几个Support  Vector组成，如果这些Support Vector中存在outlier，会对超平面的选择产生非常大的影响，甚至会找不到超平面。</p>
+<p><img src="/img/SVM学习笔记/2.png" alt=""></p>
+<p>用黑圈圈起来的那个蓝点是一个 outlier，它偏离了自己原本所应该在的那个半空 间，如果直接忽略掉它的话，原来的分隔超平面还是挺好的，但是由于这个 outlier 的出现，导致分隔超平面不得不被挤歪了，变成途中黑色虚线所示(这只是一个示意图， 并没有严格计算精确坐标)，同时 margin 也相应变小了。当然，更严重的情况是，如果 这个outlier再往右上移动一些距离的话，我们将无法构造出能将数据分开的超平面来。 </p>
+<p>为了处理这种情况，SVM允许数据点在一定程度上偏离一下超平面。例如图中，黑色实线所对应的距离，就是该outlier偏离的距离，如果把它移动回来，就刚好落在原来的超平面上，而不会使得超平面发生变形了。</p>
+<p>之前没有考虑outlier时候的约束条件为:</p>
+<script type="math/tex; mode=display">y_i(w^Tx_i+b) \geq 1, i = 1.....n</script><p>而加入outlier考虑之后的约束条件变为:</p>
+<script type="math/tex; mode=display">y_i(w^Tx_i+b)\geq1-\xi _i, i = 1.....n</script><p>如果我们对$\xi_i$不加限制的话，那么当$\xi_i$任意大的时候，任意超平面都符合条件，所以，我们需要对$\xi_i$加以限制，使得$\xi_i$的总和最小。那么目标函数变为:</p>
+<script type="math/tex; mode=display">min \frac{1}{2}||w||^2 + C\sum_{i=1}^{n}\xi_i</script><p>$s.t. y_i(w^Tx_i+b) \geq1-\xi_i, i=1…..n$</p>
+<script type="math/tex; mode=display">\xi_i \geq 0,i = 1.....n</script><p>那么我们可以得到新的拉格朗日函数：</p>
+<script type="math/tex; mode=display">\iota(w,b,\xi,\alpha,\gamma) = \frac{1}{2}||w||^2 + C\sum_{i=1}^{n}\xi_i - \sum_{i=1}^{n}{\alpha_i(y_i(w^Tx_i+b)-1+\xi_i)} - \sum_{i=1}^{n}{\gamma_i\xi_i}</script><p>与前面的处理过程类似:</p>
+<script type="math/tex; mode=display">\frac{\partial L}{\partial w} = 0 \Rightarrow w = \sum_{i=0}^{n}{\alpha_ix_iy_i}</script><script type="math/tex; mode=display">\frac{\partial L}{\partial b} = 0 \Rightarrow \sum_{i=1}^{n}\alpha_iy_i = 0</script><script type="math/tex; mode=display">\frac{\partial L}{\partial \xi_i} = 0 \Rightarrow C-\alpha_i-\gamma_i =0 , i = 1.....n</script><p>将结果代入得到和之前一样的目标函数:</p>
+<script type="math/tex; mode=display">max_\alpha\sum_{i=1}^{n}\alpha_i-\frac{1}{2}\sum_{i,j=1}^{n}\alpha_i\alpha_jy_iy_jx_i^Tx_j</script><p>但是由于有限制条件:$C-\alpha_i-\gamma_i = 0$且$\gamma_i \geq 0$，则$\alpha_i \leq C$,所以dual问题变成了:</p>
+<script type="math/tex; mode=display">max_\alpha\sum_{i=1}^{n}\alpha_i-\frac{1}{2}\sum_{i,j=1}^{n}\alpha_i\alpha_jy_iy_jx_i^Tx_j</script><script type="math/tex; mode=display">s.t. 0 \leq \alpha_i\leq C,i=1.....n</script><script type="math/tex; mode=display">\sum_{i=1}^{n}\alpha_i = 0</script><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>SVM本质上就是一个分类方法，用$w^Tx+b$定义分类函数，求w、b，寻求最大间隔，引入$\frac{1}{2}||w||^2$，继而引入拉格朗日因子，化为对拉格朗日乘子$\alpha$的求解，如此，求w、b与求$\alpha$等价，而$\alpha$的求解可以用快速学习算法SMO。至于核函数，是为处理非线性情况，若直接映射到高维计算恐维度爆炸，故在低维计算，等效高维表现。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blog.csdn.net/v_JULY_v/article/details/7624837" target="_blank" rel="noopener">支持向量机通俗导论（理解SVM的三层境界）</a></p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="../../05/Bias-Variance-trade-off/" data-tooltip="Bias-Variance trade-off" aria-label="NEXT: Bias-Variance trade-off">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="文章目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 Fitz. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="../../05/Bias-Variance-trade-off/" data-tooltip="Bias-Variance trade-off" aria-label="NEXT: Bias-Variance trade-off">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="文章目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <i id="btn-close-shareoptions" class="fa fa-times"></i>
+    <ul class="share-options">
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="../../../../assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Fitz</h4>
+        
+            <div id="about-card-bio"><p>SDU Master</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Student</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                QingDao, CHN
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('../../../../assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="../../../../assets/js/script-vufjrm3fmbuttogo1hxuu0w9w0sesk5iyysjuguc2hdhufot9szxg8twijry.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> --!>
+</body>
+</html>
